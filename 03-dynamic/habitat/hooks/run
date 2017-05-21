@@ -1,0 +1,12 @@
+#!/bin/sh
+
+TEXT="$(cat <<-EOH
+{{cfg.text}}
+I am {{sys.hostname}}
+EOH
+)"
+
+exec http-echo \
+  -listen="{{sys.ip}}:{{cfg.port}}" \
+  -text="$TEXT" \
+  2>&1

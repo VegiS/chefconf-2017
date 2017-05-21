@@ -1,0 +1,11 @@
+.DS_Store
+results/
+tmp/
+*.sig.key
+*.box.key
+*.sym.key
+
+*.tfstate
+*.tfstate.backup
+*/terraform/terraform.tfvars
+*/terraform/.terraform/

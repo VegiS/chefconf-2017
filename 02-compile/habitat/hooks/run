@@ -1,0 +1,6 @@
+#!/bin/sh
+
+exec http-echo \
+  -listen="{{sys.ip}}:{{cfg.port}}" \
+  -text="{{cfg.text}}" \
+  2>&1
