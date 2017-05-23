@@ -8,4 +8,6 @@ tmp/
 *.tfstate
 *.tfstate.backup
 */terraform/terraform.tfvars
+*/terraform/terraform.tfstate*
+*/terraform/.terraform.tfstate*
 */terraform/.terraform/

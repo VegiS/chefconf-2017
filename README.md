@@ -289,7 +289,7 @@ $ curl localhost
 And we can see that it's changing with `watch`:
 
 ```
-$ watch -n 1 -ptd curl -s localhost
+$ watch -tpn 1 curl -s localhost
 ```
 
 But what if we want to change the configuration, like the text? Let's go back
@@ -433,7 +433,7 @@ And now when we query localhost, we are round-robined to all healthy services
 
 ```
 $ curl localhost
-$ watch -tn 0.2 curl -s localhost
+$ watch -tpn 1 curl -s localhost
 ```
 
 We bound to port 80 on the host because these are actually public-facing
@@ -441,6 +441,19 @@ instances bound to DNS. You can all hit this url in your browser.
 
 ```
 https://nomad.hashicorp.rocks
+```
+
+Start the watching on my local machine
+
+```
+$ watch -tpn 1 curl -s https://nomad.hashicorp.rocks
+```
+
+Since all these are running the habitat supervisor, we can also push out a
+config change!
+
+```
+$ hab config apply --peer hab-sup.service.consul http-echo.default $(date +%s) <<< 'text = "I am @sethvargo - thank you!"'
 ```
 
 As I said before, one of the advantages of dynamic ports is that we can really
@@ -451,7 +464,7 @@ Update our `http-echo.nomad` job to run 50 instances and run.
 And let's time it:
 
 ```
-$ time nomad run http-echo.nomad
+$ time nomad run jobs/http-echo.nomad
 ```
 
 And after those containers start, they will start receiving traffic.
@@ -459,10 +472,22 @@ And after those containers start, they will start receiving traffic.
 Do you think we can bump to 250? Let's try it out
 
 ```
-$ time nomad run http-echo.nomad
+$ time nomad run jobs/http-echo.nomad
 ```
 
-## Bonus Round
+Run status to make sure they are running
+
+```
+$ nomad status http
+```
+
+Check docker
+
+```
+$ docker ps | wc -l
+```
+
+## Bonus Scale
 
 Because we used Terraform and the entire process is automated, we can easily
 scale up or down.
