@@ -2,7 +2,7 @@
 
 TEXT="$(cat <<-EOH
 {{cfg.text}}
-I am {{sys.hostname}}
+I am {{sys.hostname}} on {{sys.ip}}:{{cfg.port}}
 EOH
 )"
 

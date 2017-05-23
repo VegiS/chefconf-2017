@@ -70,7 +70,6 @@ EOF
 
 echo "--> Starting nomad"
 sudo systemctl enable nomad
-sudo systemctl start nomad
 sleep 2
 
 echo "==> Nomad is done!"

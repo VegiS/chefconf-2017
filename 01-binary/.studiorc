@@ -1,0 +1,2 @@
+hab pkg install core/curl --binlink
+export PATH="$PATH:/bin"

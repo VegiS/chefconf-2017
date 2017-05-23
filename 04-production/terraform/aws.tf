@@ -80,3 +80,25 @@ resource "aws_key_pair" "demo" {
   key_name   = "${var.namespace}"
   public_key = "${file("${var.public_key_path}")}"
 }
+
+resource "aws_iam_role" "consul-join" {
+  name               = "${var.namespace}-consul-join"
+  assume_role_policy = "${file("${path.module}/templates/policies/assume-role.json")}"
+}
+
+resource "aws_iam_policy" "consul-join" {
+  name        = "${var.namespace}-consul-join"
+  description = "Allows Consul nodes to describe instances for joining."
+  policy      = "${file("${path.module}/templates/policies/describe-instances.json")}"
+}
+
+resource "aws_iam_policy_attachment" "consul-join" {
+  name       = "${var.namespace}-consul-join"
+  roles      = ["${aws_iam_role.consul-join.name}"]
+  policy_arn = "${aws_iam_policy.consul-join.arn}"
+}
+
+resource "aws_iam_instance_profile" "consul-join" {
+  name = "${var.namespace}-consul-join"
+  role = "${aws_iam_role.consul-join.name}"
+}

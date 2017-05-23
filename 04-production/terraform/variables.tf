@@ -11,6 +11,14 @@ variable "region" {
   default     = "us-east-1"
 }
 
+variable "cloudflare_email" {
+  description = "The cloudflare email"
+}
+
+variable "cloudflare_token" {
+  description = "The cloudflare token"
+}
+
 variable "servers" {
   description = "The number of Nomad servers to create."
   default     = "3"
@@ -24,6 +32,11 @@ variable "clients" {
 variable "nomad_version" {
   description = "The version of Nomad to install (server and client)."
   default     = "0.5.6"
+}
+
+variable "consul_version" {
+  description = "The version of Consul to install (server and client)."
+  default     = "0.8.3"
 }
 
 variable "namespace" {
