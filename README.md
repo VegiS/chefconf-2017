@@ -54,6 +54,10 @@ $ hab studio enter
 I am including curl in my `.studiorc` because I'm on a mac and need to run
 supervisor locally, and that is how I'll prove to it's working.
 
+- Show plan
+- Show configuration
+- Show hook
+
 ```
 $ build
 ```
@@ -135,33 +139,19 @@ But now I need to compile the binary, so we need to update our plan.
     0.2.2.dev
     ```
 
-1. Change pkg_soruce to `nope`:
-
-    ```
-    pkg_source=nope.tar.gz
-    ```
-
-1. Delete `pkg_filename` and `pkg_shasum`
+1. Remove `pkg_source`, `pkg_filename`, and `pkg_shasum`
 
 1. Add `pkg_deps`:
 
     ```
     pkg_deps=(core/go)
     ```
-
-1. Add return 0s:
+1. Update build step
 
     ```
-    do_download() {
-      return 0
-    }
-
-    do_verify() {
-      return 0
-    }
-
-    do_unpack() {
-      return 0
+    do_build() {
+      cd "${PLAN_CONTEXT}/../source"
+      go build -o "${HAB_CACHE_SRC_PATH}/http-echo"
     }
     ```
 
@@ -240,6 +230,39 @@ Build the habitat package
 ```
 $ build
 ```
+
+Let's start up the service again.
+
+```
+$ hab svc start sethvargo/http-echo
+```
+
+Grap the IP from the logs
+
+```
+$ sup-log
+```
+
+Curl it
+
+```
+$ curl 172.17.0.2:5678
+```
+
+Since the text is dynamic, we can use habitat butterfly to push out
+configuration changes.
+
+```
+$ hab config apply http-echo.default 2 <<< 'text = "Hello Inhabitants!"'
+```
+
+Curl again
+
+```
+$ curl 172.17.0.2:5678
+```
+
+Observe, new value!
 
 Since the habitat supervisor can only run one instance of an application at a
 time, we'll need to export these as Docker containers.
@@ -330,7 +353,7 @@ I did this in advance, but it only takes about 3 minutes to spin up.
 $ ssh ubuntu@<client_ip>
 ```
 
-If you recall from the previous section, we had to spin up one peer, grap its IP
+If you recall from the previous section, we had to spin up one peer, grab its IP
 address, and then pass that as the peer to the other supervisors. Consul
 provides a service discovery layer that makes this less manual.
 
